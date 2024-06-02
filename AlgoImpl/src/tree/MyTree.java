@@ -8,106 +8,49 @@ public class MyTree {
 	}
 
 	public void add(int x) {
-		TreeNode target = new TreeNode(x);
+		TreeNode node = new TreeNode(x);
 		if (this.root == null) {
-			this.root = target;
+			this.root = node;
 			return;
 		}
-		TreeNode parent = this.root;
-		TreeNode child = null;
-		if (parent.data < target.data) {
-			child = parent.right;
-			if (child == null) {
-				parent.right = target;
-				return;
-			}
-		} else {
-			child = parent.left;
-			if (child == null) {
-				parent.left = target;
-				return;
+
+		TreeNode parent = null;
+		TreeNode target = this.root;
+		while (target != null) {
+			parent = target;
+			if (node.data <= target.data) {
+				target = target.left;
+			} else {
+				target = target.right;
 			}
 		}
-
-		while (child != null) {
-			if (child.data < target.data) {
-				parent = child;
-				child = child.right;
-				if (child == null) {
-					parent.right = target;
-					return;
-				}
-			} else {
-				parent = child;
-				child = child.left;
-				if (child == null) {
-					parent.left = target;
-					return;
-				}
-			}
+		if (node.data <= parent.data) {
+			parent.left = node;
+		} else {
+			parent.right = node;
 		}
 	}
 
 	public boolean contains(int x) {
-		if (this.root == null) {
-			return false;
-		}
-		TreeNode target = new TreeNode(x);
-		if (this.root.data == target.data) {
-			return true;
-		}
-		TreeNode parent = this.root;
-		TreeNode child = null;
-		if (parent.data < target.data) {
-			child = parent.right;
-		} else {
-			child = parent.left;
-		}
-		if (child == null) {
-			return false;
-		}
-		while (child != null) {
-			if (child.data == target.data) {
-				return true;
-			}
-			if (child.data < target.data) {
-				child = child.right;
-			} else {
-				child = child.left;
-			}
-
-		}
-		return false;
+		return this.searchNode(x) != null;
 	}
 
 	TreeNode searchNode(int x) {
 		if (this.root == null) {
 			return null;
 		}
-		TreeNode target = new TreeNode(x);
-		if (this.root.data == target.data) {
-			return this.root;
-		}
-		TreeNode parent = this.root;
-		TreeNode child = null;
-		if (parent.data < target.data) {
-			child = parent.right;
-		} else {
-			child = parent.left;
-		}
-		if (child == null) {
-			return null;
-		}
-		while (child != null) {
-			if (child.data == target.data) {
-				return child;
+		TreeNode parent = null;
+		TreeNode target = this.root;
+		while (target != null) {
+			if (target.data == x) {
+				return target;
 			}
-			if (child.data < target.data) {
-				child = child.right;
+			parent = target;
+			if (x <= target.data) {
+				target = target.left;
 			} else {
-				child = child.left;
+				target = target.right;
 			}
-
 		}
 		return null;
 
@@ -117,11 +60,11 @@ public class MyTree {
 		if (this.root == null) {
 			return null;
 		}
-		TreeNode parent = node;
-		TreeNode right = parent.right;
-		while (right != null) {
-			parent = right;
-			right = right.right;
+		TreeNode parent = null;
+		TreeNode target = node;
+		while (target != null) {
+			parent = target;
+			target = target.right;
 		}
 		return parent;
 	}
@@ -130,96 +73,108 @@ public class MyTree {
 		if (this.root == null) {
 			return null;
 		}
-		TreeNode parent = node;
-		TreeNode left = parent.left;
-		while (left != null) {
-			parent = left;
-			left = left.left;
+		TreeNode parent = null;
+		TreeNode target = node;
+		while (target != null) {
+			parent = target;
+			target = target.left;
 		}
 		return parent;
 	}
 
 	public void remove(int x) {
-		if(this.root == null) {
+		if (this.root == null) {
 			return;
 		}
 		TreeNode target = this.searchNode(x);
-		if(target == null) {
+		if (target == null) {
 			return;
 		}
-		TreeNode parent = this.root;
-		if (parent.isLeaf() && parent.data == target.data) {
-			this.root = null;
-			return;
-		}
-		
-		if(parent.data == target.data) {
-			
-		}
-		
-		TreeNode child = null;
-		int flag = 0;
-		if(parent.data < target.data) {
-			flag = 1;
-			child = parent.right;
-		} else {
-			flag = 0;
-			child = parent.left;
-		}
-		
-		while(child != target) {
-			parent = child;
-			if (child.data < target.data) {
-				child = child.right;
-				flag = 1;
+		TreeNode parent = null;
+		target = this.root;
+		while (target != null) {
+			if (target.data == x) {
+				break;
+			}
+			parent = target;
+			if (x <= target.data) {
+				target = target.left;
 			} else {
-				child = child.left;
-				flag = 0;
+				target = target.right;
 			}
 		}
-		if(child.isLeaf()) {
-			if(flag == 0) {
-				parent.left = null;
+
+		if (target.isLeaf()) {
+			if (target == this.root) {
+				this.root = null;
 				return;
+			}
+			if (target.data <= parent.data) {
+				parent.left = null;
 			} else {
 				parent.right = null;
+			}
+			return;
+		}
+
+		if (target.left != null && target.right == null) {
+			if (target == this.root) {
+				this.root = target.left;
+				target.left = null;
 				return;
 			}
-		}
-		
-		if(child.left != null && child.right == null) {
-			if(flag == 0) {
-				parent.left = child.left;
-				child.left = null;
-				return;
+			if (target.data <= parent.data) {
+				parent.left = target.left;
 			} else {
-				parent.right = child.left;
-				child.left = null;
+				parent.right = target.left;
+			}
+			target.left = null;
+			return;
+		}
+
+		if (target.left == null && target.right != null) {
+			if (target == this.root) {
+				this.root = target.right;
+				target.right = null;
 				return;
 			}
-		}
-		
-		if(child.left == null && child.right != null) {
-			if(flag == 0) {
-				parent.left = child.right;
-				child.right = null;
-				return;
+			if (target.data <= parent.data) {
+				parent.left = target.right;
 			} else {
-				parent.right = child.right;
-				child.right = null;
-				return;
+				parent.right = target.right;
 			}
+			target.right = null;
+			return;
 		}
-		
-		if(child.left != null && child.right != null) {
-			TreeNode min = this.minNode(child.right);
-			child = min;
-			min.
+
+		if (target.left != null && target.right != null) {
+			TreeNode minNode = this.minNode(target.right);
+
+			target.data = minNode.data;
+			TreeNode min_parent = target;
+			TreeNode min_target = target.right;
+			int min_x = minNode.data;
+			while (min_target != null) {
+				if (min_target.data == min_x) {
+					break;
+				}
+				min_parent = min_target;
+				if (min_x <= min_target.data) {
+					min_target = min_target.left;
+				} else {
+					min_target = min_target.right;
+				}
+			}
 			
+			if (min_target.data < min_parent.data) {
+				min_parent.left = min_target.right;
+			} else {
+				min_parent.right = min_target.right;
+			}
+			min_target.right = null;
+
 		}
-		
-		
-		
+
 	}
 }
 
