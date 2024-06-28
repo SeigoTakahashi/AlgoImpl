@@ -96,9 +96,10 @@ public class RecTree {
 			} else if (node.left == null && node.right != null) {
 				return node.right;
 			} else if (node.left != null && node.right != null) {
-				int minData = this.minNode(node.right).data;
+				TreeNode minNode = this.minNode(node.right);
+				int minData = minNode.data;
 				node.data = minData;
-				return removeRec(node.right, minData);
+				this.root.right = removeRec(this.root.right, minData);
 			}
 		} else if (x < node.data) {
 			node.left = removeRec(node.left, x);
