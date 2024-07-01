@@ -98,8 +98,8 @@ public class RecTree {
 			} else if (node.left != null && node.right != null) {
 				TreeNode minNode = this.minNode(node.right);
 				int minData = minNode.data;
+				this.root = removeRec(this.root, minData);
 				node.data = minData;
-				this.root.right = removeRec(this.root.right, minData);
 			}
 		} else if (x < node.data) {
 			node.left = removeRec(node.left, x);
