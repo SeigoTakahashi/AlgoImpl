@@ -133,7 +133,7 @@ public class RecTree {
 		}
 		return joinArray(joinArray(sortRec(node.left), new int[] { node.data }),sortRec(node.right));
 	}
-
+	
 	private int[] joinArray(int[] x, int[] y) {
 		if (x.length == 0) {
 			return y;
