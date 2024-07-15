@@ -30,7 +30,7 @@ public class RecList {
 			return false;
 		}
 		this.head = addRec(this.head, idx, data);
-		return this.head != null;
+		return true;
 
 	}
 
@@ -119,8 +119,14 @@ public class RecList {
 		if(this.isEmpty()) {
 			return -1;
 		}
+		if (0 > idx || idx >= this.size) {
+			return -1;
+		}
+		if(idx == this.size - 1) {
+			this.tail = this.getNode(this.size - 2);
+		}
 		int value = this.get(idx);
-		this.removeRec(this.head, idx);
+		this.head = this.removeRec(this.head, idx);
 		if(this.isEmpty()) {
 			this.head = null;
 			this.tail = null;
@@ -132,9 +138,12 @@ public class RecList {
 		if(this.isEmpty()) {
 			return null;
 		}
+		
 		if(idx == 0) {
 			this.size --;
-			return node.next;
+			Node next = node.next;
+			node.next = null;
+			return next;
 		}
 		node.next = removeRec(node.next, idx - 1);
 		return node;
